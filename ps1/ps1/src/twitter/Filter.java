@@ -4,6 +4,8 @@
 package twitter;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Filter consists of methods that filter a list of tweets for those matching a
@@ -28,7 +30,22 @@ public class Filter {
      *         the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+        
+        List<Tweet> filteredTweets = new ArrayList<Tweet>();
+        
+        for (int i = 0; i < tweets.size(); i++){
+            
+            if(tweets.get(i).getAuthor() == username) {
+                
+                filteredTweets.add(tweets.get(i));
+                
+            } else {
+                continue;
+            }
+        }
+        
+        return filteredTweets;
+        
     }
 
     /**
@@ -43,7 +60,32 @@ public class Filter {
      *         timespan, in the same order as in the input list.
      */
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+        
+        List<Tweet> filteredTweets = new ArrayList<Tweet>();
+        
+        for (int i = 0; i < tweets.size(); i++){
+            
+            if((tweets.get(i).getTimestamp().isAfter(timespan.getStart())) &&
+                    (tweets.get(i).getTimestamp().isBefore(timespan.getEnd()))) {
+                
+                filteredTweets.add(tweets.get(i));
+                
+            } else {
+                continue;
+            }
+        }
+        
+        return filteredTweets;
+        
+    }
+    
+    /**
+     * Check if string contains substrings.
+     * Stolen from Stack Exchange:
+     * https://stackoverflow.com/questions/8992100/test-if-a-string-contains-any-of-the-strings-from-an-array
+     */
+    public static boolean stringContainsItemFromList(String inputStr, String[] items) {
+        return Arrays.stream(items).allMatch(inputStr::contains);
     }
 
     /**
@@ -63,7 +105,26 @@ public class Filter {
      *         tweets are in the same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+        
+        List<Tweet> filteredTweets = new ArrayList<Tweet>();
+        
+        // convert words to array
+        String[] wordsArray = new String[words.size()];
+        words.toArray(wordsArray);
+        
+        for (int i = 0; i < tweets.size(); i++){
+               
+            if(Filter.stringContainsItemFromList(tweets.get(i).getText(), wordsArray)){
+                
+                filteredTweets.add(tweets.get(i));
+                
+            } else {
+                continue;
+            }
+        }
+        
+        return filteredTweets;
+         
     }
 
 }

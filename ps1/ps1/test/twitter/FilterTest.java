@@ -58,6 +58,16 @@ public class FilterTest {
         assertTrue("expected list to contain tweets", containing.containsAll(Arrays.asList(tweet1, tweet2)));
         assertEquals("expected same order", 0, containing.indexOf(tweet1));
     }
+    
+    // KIT'S EXTRA TESTS
+    @Test
+    public void testMultipleContaining() {
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet1, tweet2), Arrays.asList("talk", "minutes"));
+
+        assertFalse("expected non-empty list", containing.isEmpty());
+        assertTrue("expected list to contain tweets", containing.containsAll(Arrays.asList(tweet2)));
+        assertEquals("expected same order", 0, containing.indexOf(tweet2));
+    }
 
     /*
      * Warning: all the tests you write here must be runnable against any Filter
