@@ -3,9 +3,16 @@
  */
 package twitter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import static java.util.stream.Collectors.*;
+import static java.util.Map.Entry.*;
 
 /**
  * SocialNetwork provides methods that operate on a social network.
@@ -40,7 +47,55 @@ public class SocialNetwork {
      *            either authors or @-mentions in the list of tweets.
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        
+        Map<String, Set<String>> userNetwork = new HashMap<>();
+        
+        // get all mentioned users
+        Set<String> userList = Extract.getMentionedUsers(tweets);
+        
+        // add authors who weren't mentioned to this list
+        // to get total user list
+        for (int i = 0; i < tweets.size(); i++){
+            if (!userList.contains(tweets.get(i).getAuthor().toLowerCase())){
+                userList.add(tweets.get(i).getAuthor().toLowerCase());
+            } else {
+                continue;
+            }
+        }
+        
+        // now cycle through to find tweets authored or @-mentioned
+        for (String user : userList) {
+            
+            user = user.toLowerCase();
+                     
+            // set of users mentioned in own tweets
+            List<Tweet> ownTweets = Filter.writtenBy(tweets, user);
+            Set<String> Network = Extract.getMentionedUsers(ownTweets);
+            
+            // set of authors mentioning user in their tweets
+            // error here: you need to get ALL tweets where they're mentioned,
+            // inclduing those that are uppercase. Fix this.
+            List<Tweet> mentionedTweets = Filter.containing(
+                    tweets, Arrays.asList("@".concat(user)));
+            
+            for (int i = 0; i < mentionedTweets.size(); i++) {
+                if(!Network.contains(mentionedTweets.get(i).getAuthor().toLowerCase())) {
+                    Network.add(mentionedTweets.get(i).getAuthor().toLowerCase());
+                    
+                } else {
+                    continue;
+                }
+            }
+            
+            // remove username if present
+            Network.remove(user);
+            
+            userNetwork.put(user, Network);
+            
+        }
+        
+        return userNetwork;
+        
     }
 
     /**
@@ -53,7 +108,27 @@ public class SocialNetwork {
      *         descending order of follower count.
      */
     public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-        throw new RuntimeException("not implemented");
+        
+        Map<String, Integer> numberFollowers = new HashMap<>();
+        
+        for(String user : followsGraph.keySet()) {
+            
+            numberFollowers.put(user, followsGraph.get(user).size());
+            
+        }
+        
+        // sort a map by size
+        // stolen from stack exchange
+        Map<String, Integer> sorted = numberFollowers
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(
+                    toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                        LinkedHashMap::new));
+        
+        return new ArrayList<>(sorted.keySet());
+
+        }
     }
 
-}

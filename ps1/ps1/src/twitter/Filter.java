@@ -35,9 +35,10 @@ public class Filter {
         
         for (int i = 0; i < tweets.size(); i++){
             
-            if(tweets.get(i).getAuthor() == username) {
+            if(tweets.get(i).getAuthor().toLowerCase().equals(username.toLowerCase())) {
                 
                 filteredTweets.add(tweets.get(i));
+
                 
             } else {
                 continue;
