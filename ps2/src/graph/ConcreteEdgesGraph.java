@@ -15,13 +15,13 @@ import java.util.Collections;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteEdgesGraph implements Graph<String> {
+public class ConcreteEdgesGraph<L> implements Graph<L> {
     
-    private final Set<String> vertices = new HashSet<>();
-    private final List<Edge<String>> edges = new ArrayList<>();
+    private final Set<L> vertices = new HashSet<>();
+    private final List<Edge<L>> edges = new ArrayList<>();
     
     // Rep invariant:
-    //   vertices is a list of Strings
+    //   vertices is a list containing elements of type L
     //   edges is a list of the type Edge
     // all edges are tied to vertices which exist in vertices
     //   does edges.length() have a strict relationship with vertices.length()? 
@@ -31,7 +31,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
     //   represents a weighted directional graph with vertices and edges
     // Safety from rep exposure:
     //   All fields are private;
-    //   vertices are Strings, and weights are Integers, so are guaranteed immutable;
+    //   vertices are Ls, and weights are Integers, so are guaranteed immutable;
     
     // constructor
     ConcreteEdgesGraph() {
@@ -50,7 +50,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
         
     }
     
-    @Override public boolean add(String vertex) {
+    @Override public boolean add(L vertex) {
         if(vertices.contains(vertex)) {
             return false;
         } else {
@@ -60,7 +60,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
     
     
-    @Override public int set(String source, String target, int weight) {
+    @Override public int set(L source, L target, int weight) {
         
         // exception for illegal weights
         if(weight < 0){
@@ -113,7 +113,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
             // add new edge
             } else {
                 
-                Edge<String> newEdge = new Edge<String>("","",0) ;
+                Edge<L> newEdge = new Edge<L>(null,null,0) ;
                 newEdge.alterWeight(weight);
                 newEdge.alterTarget(target);
                 newEdge.alterSource(source);
@@ -127,7 +127,7 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
 
 
-    @Override public boolean remove(String vertex) {
+    @Override public boolean remove(L vertex) {
         
         if(vertices.contains(vertex)) {
             
@@ -152,17 +152,17 @@ public class ConcreteEdgesGraph implements Graph<String> {
         }  
     }
     
-    @Override public Set<String> vertices() {
+    @Override public Set<L> vertices() {
         return vertices;
     }
     
-    @Override public Map<String, Integer> sources(String target) {
+    @Override public Map<L, Integer> sources(L target) {
         
-        Map<String, Integer> SourceMap = Collections.emptyMap();
+        Map<L, Integer> SourceMap = Collections.emptyMap();
         
         for (int i = 0; i < edges.size(); i++) {
             if(edges.get(i).target() == target) {
-                String source = edges.get(i).source().toString();
+                L source = edges.get(i).source();
                 SourceMap.put(source, edges.get(i).weight());
             } else {
                 continue;
@@ -173,13 +173,13 @@ public class ConcreteEdgesGraph implements Graph<String> {
         
     }
     
-    @Override public Map<String, Integer> targets(String source) {
+    @Override public Map<L, Integer> targets(L source) {
         
-        Map<String, Integer> TargetMap = Collections.emptyMap();
+        Map<L, Integer> TargetMap = Collections.emptyMap();
         
         for (int i = 0; i < edges.size(); i++) {
             if(edges.get(i).source() == source) {
-                String target = edges.get(i).target().toString();
+                L target = edges.get(i).target();
                 TargetMap.put(target, edges.get(i).weight());
             } else {
                 continue;
@@ -192,21 +192,34 @@ public class ConcreteEdgesGraph implements Graph<String> {
     
     @Override public String toString() {
         
-        String string = String.join(", ", vertices); 
-        
+        String string = vertices.toString(); 
+                
         return string;
+    }
+    
+    public Graph<L> empty(){
+        
+        Graph<L> emptyGraph = new ConcreteEdgesGraph<L>();
+        
+        return emptyGraph;
+        
     }
     
 }
 
 /**
- * TODO specification
  * Immutable.
  * This class is internal to the rep of ConcreteEdgesGraph.
+ * Rep invariant:
+ * this class has three immutable characteristics, a weight, source, and target.
+ * Abstraction Function:
+ * represents the edge of a weighted directional graph, with source and target vertices.
+ * Safety from rep exposure:
+ * All fields are private;
+ * vertices are only immutable types, and weights are Integers, so are guaranteed immutable.  
  * 
- * <p>PS2 instructions: the specification and implementation of this class is
- * up to you.
  */
+
 final class Edge<E> {
     
     // fields
@@ -223,7 +236,6 @@ final class Edge<E> {
     //   vertices are only immutable types, and weights are Integers, so are guaranteed immutable.
     
    
-    // TODO constructor 
     public Edge(E s, E t, int w) {
         this.weight = w;
         this.source = s;
@@ -231,12 +243,10 @@ final class Edge<E> {
         checkRep();
     }
     
-    // TODO checkRep
     private void checkRep() {
         // I have no idea what to put here... ?
     }
     
-    // TODO methods
     public E source() {
         return source;
     }
@@ -265,7 +275,7 @@ final class Edge<E> {
     }
     
     public String toString() {
-        String string = String.valueOf(weight) + source.toString() + target.toString() ;
+        String string = String.valueOf(weight) + ", " + source.toString() + ", " + target.toString() ;
         return string;
     }
     

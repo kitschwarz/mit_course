@@ -5,9 +5,6 @@ package graph;
 
 import static org.junit.Assert.*;
 
-import java.util.Collections;
-import java.util.Set;
-
 import org.junit.Test;
 
 /**
@@ -24,7 +21,7 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
      * Provide a ConcreteEdgesGraph for tests in GraphInstanceTest.
      */
     @Override public Graph<String> emptyInstance() {
-        return new ConcreteEdgesGraph();
+        return new ConcreteEdgesGraph<String>();
     }
     
     /*
@@ -62,17 +59,43 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     
     
     // Testing strategy for ConcreteEdgesGraph.toString()
-    //   TODO
-    
-    // TODO tests for ConcreteEdgesGraph.toString()
-    
-    /*
-     * Testing Edge...
-     */
+    // make sure it returns a null string for an empty graph
+    // make sure it returns the list of vertices for a non-empty graph
+    @Test
+    public void testToString() {
+        
+        Graph<String> checkGraph = emptyInstance();
+        
+        assertEquals("expected new graph to have blank string representation",
+                "[]", checkGraph.toString());
+        
+        checkGraph.add("yuck");
+        checkGraph.add("yikes");
+        
+        assertEquals("expected new graph to add a new vertex",
+                "[yikes, yuck]", checkGraph.toString());
+        
+    }
     
     // Testing strategy for Edge
-    //   TODO
+    // returns weights even if zero
+    // returns correct methods answers
     
-    // TODO tests for operations of Edge
+    @Test
+    public void testEdge() {
+        
+        Edge<String> checkEdge = new Edge<String>("so", "sleepy", 42);
+        
+        assertEquals("expected new graph to add a new vertex",
+                "so", checkEdge.source());
+        
+        assertEquals("expected new graph to add a new vertex",
+                "sleepy", checkEdge.target());
+        
+        assertEquals("expected new graph to add a new vertex",
+                42, checkEdge.weight());
+        
+       
+    }
     
 }
