@@ -26,7 +26,9 @@ public interface Graph<L> {
      * @return a new empty weighted directed graph
      */
     public static <L> Graph<L> empty() {
-        throw new RuntimeException("not implemented");
+        
+        throw new RuntimeException("not yet implemented");
+                
     }
     
     /**
@@ -37,6 +39,7 @@ public interface Graph<L> {
      *         given label; otherwise false (and this graph is not modified)
      */
     public boolean add(L vertex);
+    
     
     /**
      * Add, change, or remove a weighted directed edge in this graph.
@@ -53,6 +56,7 @@ public interface Graph<L> {
      *         edge
      */
     public int set(L source, L target, int weight);
+    
     
     /**
      * Remove a vertex from this graph; any edges to or from the vertex are

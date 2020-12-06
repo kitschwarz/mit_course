@@ -36,11 +36,32 @@ public abstract class GraphInstanceTest {
     
     @Test
     public void testInitialVerticesEmpty() {
-        // TODO you may use, change, or remove this test
         assertEquals("expected new graph to have no vertices",
                 Collections.emptySet(), emptyInstance().vertices());
     }
     
-    // TODO other tests for instance methods of Graph
+    @Test
+    public void testAddable() {
+        assertEquals("expected new graph to allow adding",
+                true, emptyInstance().add("try"));
+    }
     
+    @Test
+    public void testSource() {
+        assertEquals("expected new graph to have no sources",
+                Collections.emptyMap(), emptyInstance().sources("try"));
+    }
+    
+    @Test
+    public void testTarget() {
+        assertEquals("expected new graph to have no targets",
+                Collections.emptyMap(), emptyInstance().targets("try"));
+    }
+    
+    @Test
+    public void testRemovable() {
+        assertEquals("expected new graph to not be able to remove",
+                false, emptyInstance().remove("try"));
+    }
+        
 }
